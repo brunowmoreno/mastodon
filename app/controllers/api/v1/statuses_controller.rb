@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Api::V1::StatusesController < ApiController
+class Api::V1::StatusesController < Api::BaseController
   include Authorization
 
   before_action :authorize_if_got_token, except:            [:create, :destroy, :reblog, :unreblog, :favourite, :unfavourite, :mute, :unmute]
@@ -79,7 +79,10 @@ class Api::V1::StatusesController < ApiController
 
   def destroy
     @status = Status.where(account_id: current_user.account).find(params[:id])
+    authorize @status, :destroy?
+
     RemovalWorker.perform_async(@status.id)
+
     render_empty
   end
 
@@ -92,6 +95,8 @@ class Api::V1::StatusesController < ApiController
     reblog       = Status.where(account_id: current_user.account, reblog_of_id: params[:id]).first!
     @status      = reblog.reblog
     @reblogs_map = { @status.id => false }
+
+    authorize reblog, :unreblog?
 
     RemovalWorker.perform_async(reblog.id)
 
