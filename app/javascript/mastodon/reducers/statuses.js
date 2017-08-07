@@ -21,10 +21,6 @@ import {
   TIMELINE_EXPAND_SUCCESS,
 } from '../actions/timelines';
 import {
-  ACCOUNT_TIMELINE_FETCH_SUCCESS,
-  ACCOUNT_TIMELINE_EXPAND_SUCCESS,
-  ACCOUNT_MEDIA_TIMELINE_FETCH_SUCCESS,
-  ACCOUNT_MEDIA_TIMELINE_EXPAND_SUCCESS,
   ACCOUNT_BLOCK_SUCCESS,
 } from '../actions/accounts';
 import {
@@ -37,7 +33,7 @@ import {
   FAVOURITED_STATUSES_EXPAND_SUCCESS,
 } from '../actions/favourites';
 import { SEARCH_FETCH_SUCCESS } from '../actions/search';
-import Immutable from 'immutable';
+import { Map as ImmutableMap, fromJS } from 'immutable';
 
 const normalizeStatus = (state, status) => {
   if (!status) {
@@ -55,7 +51,7 @@ const normalizeStatus = (state, status) => {
   const searchContent = [status.spoiler_text, status.content].join(' ').replace(/<br \/>/g, '\n').replace(/<\/p><p>/g, '\n\n');
   normalStatus.search_index = new DOMParser().parseFromString(searchContent, 'text/html').documentElement.textContent;
 
-  return state.update(status.id, Immutable.Map(), map => map.mergeDeep(Immutable.fromJS(normalStatus)));
+  return state.update(status.id, ImmutableMap(), map => map.mergeDeep(fromJS(normalStatus)));
 };
 
 const normalizeStatuses = (state, statuses) => {
@@ -86,7 +82,7 @@ const filterStatuses = (state, relationship) => {
   return state;
 };
 
-const initialState = Immutable.Map();
+const initialState = ImmutableMap();
 
 export default function statuses(state = initialState, action) {
   switch(action.type) {
@@ -113,10 +109,6 @@ export default function statuses(state = initialState, action) {
     return state.setIn([action.id, 'muted'], false);
   case TIMELINE_REFRESH_SUCCESS:
   case TIMELINE_EXPAND_SUCCESS:
-  case ACCOUNT_TIMELINE_FETCH_SUCCESS:
-  case ACCOUNT_TIMELINE_EXPAND_SUCCESS:
-  case ACCOUNT_MEDIA_TIMELINE_FETCH_SUCCESS:
-  case ACCOUNT_MEDIA_TIMELINE_EXPAND_SUCCESS:
   case CONTEXT_FETCH_SUCCESS:
   case NOTIFICATIONS_REFRESH_SUCCESS:
   case NOTIFICATIONS_EXPAND_SUCCESS:

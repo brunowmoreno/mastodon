@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { default: manageTranslations } = require('react-intl-translations-manager');
 
-const RFC5646_REGEXP = /^[a-z]{2,3}(?:|[A-Z]+)$/;
+const RFC5646_REGEXP = /^[a-z]{2,3}(?:|-[A-Z]+)$/;
 
 const rootDirectory = path.resolve(__dirname, '..', '..');
 const translationsDirectory = path.resolve(rootDirectory, 'app', 'javascript', 'mastodon', 'locales');
@@ -38,7 +38,6 @@ const validateLanguages = (languages, validators) => {
   }, []);
 
   if (invalidLanguages.length > 0) {
-    // eslint-disable-next-line no-console
     console.error(`
 Error: Specified invalid LANGUAGES:
 ${invalidLanguages.map(({ language, error }) => `* ${language}: ${error.message}`).join('\n')}
@@ -73,7 +72,6 @@ ${availableLanguages.join(', ')}
 
 // check if message directory exists
 if (!fs.existsSync(messagesDirectory)) {
-  // eslint-disable-next-line no-console
   console.error(`
 Error: messagesDirectory not exists
 (${messagesDirectory})
